@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ZIVPN Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 45%, #000 100%);
+      color: #e5e7eb;
+      min-height: 100vh;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+    body.light-mode {
+      background: radial-gradient(circle at top, #e5e7eb 0, #f9fafb 45%, #e5e7eb 100%);
+      color: #0f172a;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 14px 40px;
+    }
+    .card {
+      background: rgba(15,23,42,0.95);
+      border-radius: 18px;
+      padding: 20px 18px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+      border: 1px solid rgba(148,163,184,0.35);
+      backdrop-filter: blur(14px);
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+    body.light-mode .card {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin: 0 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      overflow: hidden;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 18px rgba(34,197,94,0.7);
+    }
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .top-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .vps-box {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.45);
+      flex: 1 1 100%;
+      width: 100%;
+      box-sizing: border-box;
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+    body.light-mode .vps-box {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+    }
+    .vps-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    body.light-mode .vps-label {
+      color: #6b7280;
+    }
+    .vps-value {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .muted {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+    body.light-mode .muted {
+      color: #6b7280;
+    }
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .stat-chip {
+      flex: 1 1 80px;
+      min-width: 90px;
+      border-radius: 12px;
+      padding: 8px 10px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.45);
+      font-size: 0.8rem;
+      transition: background 0.25s ease, border-color 0.25s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    body.light-mode .stat-chip {
+      background: #e5f0ff;
+      border-color: #bfdbfe;
+    }
+    .stat-label { color:#9ca3af; margin-bottom:2px; display:flex;align-items:center;gap:6px;}
+    body.light-mode .stat-label { color:#6b7280; }
+    .stat-value { font-size:0.9rem;font-weight:600;}
+    .stat-dot {
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      display:inline-block;
+    }
+    .stat-dot-online {
+      background: radial-gradient(circle at 30% 30%, #bbf7d0 0, #22c55e 40%, #065f46 100%);
+      box-shadow:0 0 8px rgba(34,197,94,0.9),0 0 16px rgba(34,197,94,0.6);
+      animation:pulseGreen 1.4s ease-in-out infinite;
+    }
+    .stat-dot-offline {
+      background: radial-gradient(circle at 30% 30%, #fecaca 0, #ef4444 40%, #7f1d1d 100%);
+      box-shadow:0 0 8px rgba(248,113,113,0.9),0 0 16px rgba(248,113,113,0.6);
+      animation:pulseRed 1.4s ease-in-out infinite;
+    }
+    .pill {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.95);
+    }
+    .pill-blue {
+      border-color: rgba(34,197,94,0.9);
+      color: #bbf7d0;
+      background: rgba(22,163,74,0.18);
+    }
+    body.light-mode .pill-blue {
+      background:#bbf7d0;
+      border-color:#22c55e;
+      color:#166534;
+    }
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: stretch;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .input-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .input-wrap span.icon {
+      font-size: 0.8rem;
+      opacity: 0.9;
+      color: #9ca3af;
+    }
+    body.light-mode .input-wrap span.icon {
+      color: #6b7280;
+    }
+    .input-wrap input {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color: #e5e7eb;
+      font-size: 0.85rem;
+      transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+      box-sizing: border-box;
+    }
+    body.light-mode .input-wrap input {
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #cbd5f5;
+    }
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 7px 14px;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      background: linear-gradient(135deg,#22c55e,#0ea5e9,#a855f7);
+      background-size: 200% 200%;
+      color: #020617;
+      font-weight: 600;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.7);
+      white-space: nowrap;
+      animation: btnShift 4s ease-in-out infinite;
+    }
+    @keyframes btnShift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+    .btn-sm {
+      padding: 4px 9px;
+      font-size: 0.78rem;
+      box-shadow: none;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(148,163,184,0.6);
+      color: inherit;
+      animation:none;
+      background-size:auto;
+    }
+    .btn-danger {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(248,113,113,0.8);
+      color: #fecaca;
+      box-shadow:none;
+      animation:none;
+    }
+    body.light-mode .btn-danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    .users-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .user-card {
+      background: rgba(15,23,42,0.98);
+      border-radius: 14px;
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 10px 10px;
+      font-size: 0.78rem;
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+    body.light-mode .user-card {
+      background: #ffffff;
+      border-color: #d1d5db;
+    }
+    .user-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:4px;
+    }
+    .user-title {
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:0.85rem;
+    }
+    .loader3d {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: conic-gradient(#22c55e,#22d3ee,#6366f1,#f97316,#f43f5e,#22c55e);
+      animation: spin3d 1s linear infinite;
+      box-shadow: 0 0 6px rgba(56,189,248,0.7);
+    }
+    @keyframes spin3d {
+      to { transform: rotate(360deg); }
+    }
+    .badge-port {
+      font-size:0.7rem;
+      border-radius:999px;
+      padding:2px 7px;
+      border:1px solid rgba(34,197,94,0.9);
+      color:#bbf7d0;
+      background:rgba(22,163,74,0.18);
+    }
+    body.light-mode .badge-port {
+      background:#bbf7d0;
+      border-color:#22c55e;
+      color:#166534;
+    }
+    .field-row {display:flex;justify-content:space-between;gap:6px;margin:1px 0;}
+    .field-label {color:#9ca3af;}
+    body.light-mode .field-label {color:#6b7280;}
+    .field-value {
+      font-weight:500;
+      display:flex;
+      align-items:center;
+      gap:3px;
+      background: linear-gradient(120deg,#22c55e,#0ea5e9,#a855f7);
+      background-size:200% 200%;
+      -webkit-background-clip:text;
+      color: transparent;
+      animation:textFlow 5s ease-in-out infinite;
+    }
+    @keyframes textFlow{
+      0%,100%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+    }
+    .status-dot {
+      width:9px;
+      height:9px;
+      border-radius:999px;
+      display:inline-block;
+      margin-right:4px;
+    }
+    .status-online {
+      background: radial-gradient(circle at 30% 30%, #bbf7d0 0, #22c55e 40%, #065f46 100%);
+      box-shadow: 0 0 8px rgba(34,197,94,0.9), 0 0 16px rgba(34,197,94,0.6);
+      animation:pulseGreen 1.4s ease-in-out infinite;
+    }
+    .status-warning {
+      background: radial-gradient(circle at 30% 30%, #fef9c3 0, #eab308 40%, #854d0e 100%);
+      box-shadow:0 0 8px rgba(234,179,8,0.9),0 0 16px rgba(234,179,8,0.6);
+      animation:pulseYellow 1.4s ease-in-out infinite;
+    }
+    .status-offline {
+      background: radial-gradient(circle at 30% 30%, #fecaca 0, #ef4444 40%, #7f1d1d 100%);
+      box-shadow:0 0 8px rgba(248,113,113,0.9),0 0 16px rgba(248,113,113,0.6);
+      animation:pulseRed 1.4s ease-in-out infinite;
+    }
+    @keyframes pulseGreen {
+      0%,100% { transform: scale(1); opacity:1;}
+      50% { transform: scale(1.4); opacity:0.6;}
+    }
+    @keyframes pulseYellow {
+      0%,100% { transform: scale(1); opacity:1;}
+      50% { transform: scale(1.4); opacity:0.6;}
+    }
+    @keyframes pulseRed {
+      0%,100% { transform: scale(1); opacity:1;}
+      50% { transform: scale(1.4); opacity:0.6;}
+    }
+    .actions {display:flex;gap:4px;margin-top:6px;}
+    .logout-fab {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg,#f97316,#ef4444);
+      color: #0b1120;
+      text-decoration: none;
+      font-size: 1.1rem;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.85);
+      border: 1px solid rgba(248,250,252,0.7);
+      z-index: 50;
+    }
+    .theme-fab {
+      position: fixed;
+      top: 60px;
+      right: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg,#0ea5e9,#6366f1);
+      color: #f9fafb;
+      text-decoration: none;
+      font-size: 1.1rem;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.7);
+      border: 1px solid rgba(248,250,252,0.7);
+      z-index: 50;
+      cursor: pointer;
+    }
+    .settings-fab {
+      position: fixed;
+      top: 104px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg,#22c55e,#14b8a6);
+      color: #0b1120;
+      text-decoration: none;
+      font-size: 1.0rem;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.7);
+      border: 1px solid rgba(248,250,252,0.7);
+      z-index: 50;
+      cursor: pointer;
+    }
+    .copy-btn {
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      font-size:0.78rem;
+      padding:0 3px;
+      color:inherit;
+    }
+    .footer-icons {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    .footer-icons a {
+      text-decoration: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+    }
+    .social-icon {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      object-fit: cover;
+    }
+    .form-row-extra {
+      margin-top: 6px;
+    }
+    .settings-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 55;
+    }
+    body.light-mode .settings-backdrop {
+      background: rgba(148,163,184,0.6);
+    }
+    .settings-card {
+      background: rgba(15,23,42,0.97);
+      border-radius: 16px;
+      padding: 14px 16px;
+      width: 280px;
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+      font-size: 0.8rem;
+    }
+    body.light-mode .settings-card {
+      background: #ffffff;
+      border-color: #d1d5db;
+    }
+    .settings-card h2 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+    }
+    .settings-card .desc {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    body.light-mode .settings-card .desc {
+      color: #6b7280;
+    }
+    .settings-card .field {
+      margin-bottom: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .settings-card label {
+      font-size: 0.73rem;
+      color: #9ca3af;
+    }
+    body.light-mode .settings-card label {
+      color: #6b7280;
+    }
+    .settings-card input {
+      border-radius: 9px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      background: rgba(15,23,42,0.95);
+      color: #e5e7eb;
+    }
+    body.light-mode .settings-card input {
+      background: #f9fafb;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+    .settings-actions {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+    @media (max-width:768px){
+      .top-row {flex-direction:column;}
+      .stat-row {flex-direction:column;}
+    }
+    #msg-toast {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 260px;
+      max-width: 360px;
+      background: rgba(15,23,42,0.97);
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 10px 12px;
+      font-size: 0.78rem;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+      color: #e5e7eb;
+      display: none;
+      z-index: 60;
+    }
+    body.light-mode #msg-toast {
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #d1d5db;
+    }
+    #msg-toast-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:4px;
+      font-weight:600;
+      font-size:0.82rem;
+    }
+    #msg-toast-rows .row {
+      display:flex;
+      justify-content:space-between;
+      gap:6px;
+      margin:1px 0;
+    }
+    #msg-toast-rows .label {
+      color:#9ca3af;
+    }
+    body.light-mode #msg-toast-rows .label {
+      color:#6b7280;
+    }
+    #msg-toast-rows .value {
+      display:flex;
+      align-items:center;
+      gap:3px;
+      font-weight:500;
+    }
+    #msg-toast-close {
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      color:inherit;
+      font-size:0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <a href="/logout" class="logout-fab" title="Logout">🔒</a>
+  <div class="theme-fab" id="themeFab" title="Toggle Dark/Light" onclick="toggleTheme()">🌙</div>
+  <div class="settings-fab" id="settingsFab" title="Admin Settings" onclick="openAdminSettings()">⚙️</div>
+
+  <div class="container">
+    <div class="card">
+      <h1>
+        <span class="logo">
+          <img src="https://raw.githubusercontent.com/JVPNSHOP/Admin-Zivpn/main/image/z.png" alt="ZIVPN">
+        </span>
+        <span>ZIVPN Admin Panel</span>
+      </h1>
+
+      <div class="top-row">
+        <div class="vps-box">
+          <div class="vps-label">VPS IP</div>
+          <div class="vps-value">
+            <span id="server-ip">Detecting...</span>
+            <span class="pill pill-blue" id="udp-port-pill">UDP :5667</span>
+          </div>
+          <div class="muted" style="margin-top:4px;">
+            Admin Panel: <span id="panel-url"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW: CPU / RAM / STORAGE row -->
+      <div class="stat-row">
+        <div class="stat-chip">
+          <div class="stat-label">🧠 CPU</div>
+          <div class="stat-value" id="stat-cpu">-</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-label">💾 RAM</div>
+          <div class="stat-value" id="stat-ram">-</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-label">🗄 Storage</div>
+          <div class="stat-value" id="stat-disk">-</div>
+        </div>
+      </div>
+
+      <!-- USER COUNTS row -->
+      <div class="stat-row">
+        <div class="stat-chip">
+          <div class="stat-label">👥 Total Users</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-label"><span class="stat-dot stat-dot-online"></span>Online</div>
+          <div class="stat-value" id="stat-online">0</div>
+        </div>
+        <div class="stat-chip">
+          <div class="stat-label"><span class="stat-dot stat-dot-offline"></span>Offline</div>
+          <div class="stat-value" id="stat-offline">0</div>
+        </div>
+      </div>
+
+      <!-- HWID Search Bar -->
+      <div class="form-row form-row-extra">
+        <div class="input-wrap">
+          <span class="icon">🔍 Search by HWID</span>
+          <input id="search-hwid" placeholder="Type HWID to filter users">
+        </div>
+      </div>
+
+      <form id="create-form" onsubmit="createUser(event)">
+        <div class="form-row">
+          <div class="input-wrap">
+            <span class="icon">👤 Username</span>
+            <input id="username" name="username" placeholder="Enter username">
+          </div>
+          <div class="input-wrap">
+            <span class="icon">🔑 Password</span>
+            <input id="password" name="password" placeholder="Enter password">
+          </div>
+          <div class="input-wrap">
+            <span class="icon">🔐 HWID (optional)</span>
+            <input id="hwid" name="hwid" placeholder="Paste ZIVPN HWID here">
+          </div>
+          <div class="input-wrap">
+            <span class="icon">📅 Custom Expire Date</span>
+            <input id="expire_date" name="expire_date" type="date">
+          </div>
+          <button class="btn" type="submit">
+            <span>➕</span> Add Account
+          </button>
+        </div>
+      </form>
+
+      <div id="users-wrap" class="users-grid"></div>
+
+      <div class="footer-icons">
+        <span>Contact :</span>
+        <a class="tg" href="https://t.me/Pussy1990" target="_blank" title="Telegram">
+          <img class="social-icon" src="https://raw.githubusercontent.com/JVPNSHOP/Admin-Zivpn/main/image/t.png" alt="Telegram">
+        </a>
+        <a class="fb" href="https://www.facebook.com/juehtet2025" target="_blank" title="Facebook">
+          <img class="social-icon" src="https://raw.githubusercontent.com/JVPNSHOP/Admin-Zivpn/main/image/f.png" alt="Facebook">
+        </a>
+        <a class="ms" href="https://m.me/juehtet2025" target="_blank" title="Messenger">
+          <img class="social-icon" src="https://raw.githubusercontent.com/JVPNSHOP/Admin-Zivpn/main/image/m.png" alt="Messenger">
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- settings modal + toast အောက်မှာ အရင်လိုမပြောင်းလောက်ဘူး -->
+  <div id="admin-settings-backdrop" class="settings-backdrop">
+    <div class="settings-card">
+      <h2>Admin Settings</h2>
+      <div class="desc">
+        Change admin username/password without reinstall.
+      </div>
+      <form id="admin-settings-form" onsubmit="saveAdminSettings(event)">
+        <div class="field">
+          <label>Current Admin Password</label>
+          <input type="password" id="admin-old-pass" placeholder="Enter current password">
+        </div>
+        <div class="field">
+          <label>New Username (optional)</label>
+          <input type="text" id="admin-new-user" placeholder="Leave blank to keep same">
+        </div>
+        <div class="field">
+          <label>New Password (optional)</label>
+          <input type="password" id="admin-new-pass" placeholder="Leave blank to keep same">
+        </div>
+        <div class="settings-actions">
+          <button type="button" class="btn btn-sm btn-ghost" onclick="closeAdminSettings()">Cancel</button>
+          <button type="submit" class="btn btn-sm">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="msg-toast">
+    <div id="msg-toast-header">
+      <span>Create Account Successfully ✅</span>
+      <button id="msg-toast-close" onclick="hideToast()">✕</button>
+    </div>
+    <div id="msg-toast-rows"></div>
+  </div>
+
+  <script>
+    let serverIpCache = null;
+    let lastUsersPayload = null;
+
+    function setDefaultDate() {
+      const d = new Date();
+      d.setDate(d.getDate() + 30);
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      document.getElementById('expire_date').value = `${y}-${m}-${day}`;
+    }
+
+    async function fetchServerInfo() {
+      try {
+        const res = await fetch('/api/server');
+        const data = await res.json();
+        serverIpCache = data.ip;
+        document.getElementById('server-ip').textContent = data.ip;
+        document.getElementById('panel-url').textContent = data.ip + ':' + data.panel_port;
+        document.getElementById('udp-port-pill').textContent = 'UDP :' + data.udp_port;
+
+        // CPU / RAM / DISK info ပြ
+        const cpu = data.cpu_percent != null ? data.cpu_percent + '%' : '-';
+        const ram = (data.mem_used_percent != null && data.mem_total_gb != null)
+          ? `${data.mem_used_percent}% of ${data.mem_total_gb} GB`
+          : '-';
+        const disk = (data.disk_used_percent != null && data.disk_total_gb != null)
+          ? `${data.disk_used_percent}% of ${data.disk_total_gb} GB`
+          : '-';
+
+        document.getElementById('stat-cpu').textContent = cpu;
+        document.getElementById('stat-ram').textContent = ram;
+        document.getElementById('stat-disk').textContent = disk;
+      } catch (e) {
+        document.getElementById('server-ip').textContent = 'Unknown';
+      }
+    }
+
+    function copyText(text) {
+      if (!text) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    }
+
+    function statusClass(status) {
+      if (status === "Online") return "status-online";
+      if (status === "Expiring") return "status-warning";
+      return "status-offline";
+    }
+
+    function renderUsers(data) {
+      const wrap = document.getElementById('users-wrap');
+      const searchVal = (document.getElementById('search-hwid')?.value || '').trim().toLowerCase();
+
+      const allUsers = data.users || [];
+      let users = allUsers;
+
+      if (searchVal) {
+        users = allUsers.filter(u => ((u.hwid || '') + '').toLowerCase().includes(searchVal));
+      }
+
+      wrap.innerHTML = '';
+      document.getElementById('stat-total').textContent = data.total;
+      document.getElementById('stat-online').textContent = data.online;
+      document.getElementById('stat-offline').textContent = data.offline;
+
+      const vpsIp = serverIpCache || '...';
+      users.forEach(u => {
+        const card = document.createElement('div');
+        card.className = 'user-card';
+
+        const portText = u.udp_port != null ? u.udp_port : '-';
+
+        const safeUser = u.username.replace(/"/g, '&quot;');
+        const safePass = u.password.replace(/"/g, '&quot;');
+        const safeHwid = (u.hwid || '').replace(/"/g, '&quot;');
+
+        card.innerHTML = `
+          <div class="user-header">
+            <div class="user-title">
+              <span class="loader3d"></span>
+              <span>${safeUser}</span>
+            </div>
+            <span class="badge-port">PORT ${portText}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">VPS IP</span>
+            <span class="field-value">
+              ${vpsIp}
+              <button class="copy-btn" type="button" onclick="copyText('${vpsIp}')">📋</button>
+            </span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Username</span>
+            <span class="field-value">
+              ${safeUser}
+              <button class="copy-btn" type="button" onclick="copyText('${safeUser}')">📋</button>
+            </span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Password</span>
+            <span class="field-value">
+              ${safePass}
+              <button class="copy-btn" type="button" onclick="copyText('${safePass}')">📋</button>
+            </span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">HWID</span>
+            <span class="field-value">
+              ${safeHwid || '-'}
+              ${safeHwid ? `<button class="copy-btn" type="button" onclick="copyText('${safeHwid}')">📋</button>` : ''}
+            </span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Day Left</span>
+            <span class="field-value">${u.day_left} Days</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Expire Date</span>
+            <span class="field-value">${u.expire_at}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Status</span>
+            <span class="field-value"><span class="status-dot ${statusClass(u.status)}"></span>${u.status}</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-sm btn-ghost" type="button"
+              onclick='editUser(${u.id},"${safeUser}","${safePass}","${u.expire_at}","${safeHwid}")'>✏ Edit</button>
+            <button class="btn btn-sm btn-danger" type="button" onclick="deleteUser(${u.id})">🗑 Delete</button>
+          </div>
+        `;
+        wrap.appendChild(card);
+      });
+    }
+
+    async function fetchUsers() {
+      try {
+        const res = await fetch('/api/users');
+        if (res.status === 401 || res.redirected) {
+          window.location.href = '/login';
+          return;
+        }
+        const data = await res.json();
+        lastUsersPayload = data;
+        renderUsers(data);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function showToast(info) {
+      const box = document.getElementById('msg-toast');
+      const rows = document.getElementById('msg-toast-rows');
+      rows.innerHTML = '';
+
+      const fields = [
+        ['IP', info.ip],
+        ['User', info.user],
+        ['Pass', info.pass],
+        ['HWID', info.hwid],
+        ['Day Left', String(info.dayLeft) + ' Days'],
+        ['Expire', info.expire],
+        ['Port', info.port]
+      ];
+
+      fields.forEach(([label, value]) => {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `
+          <span class="label">${label}</span>
+          <span class="value">
+            ${value}
+            <button class="copy-btn" type="button" onclick="copyText('${value}')">📋</button>
+          </span>
+        `;
+        rows.appendChild(row);
+      });
+
+      box.style.display = 'block';
+      clearTimeout(box._timer);
+      box._timer = setTimeout(hideToast, 8000);
+    }
+
+    function hideToast() {
+      const box = document.getElementById('msg-toast');
+      box.style.display = 'none';
+    }
+
+    async function createUser(ev) {
+      ev.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const hwid = document.getElementById('hwid').value.trim();
+      const expire_date = document.getElementById('expire_date').value.trim();
+
+      if (!username || !password) {
+        alert('Username & Password required');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, expire_date, hwid })
+        });
+
+        if (res.status === 401 || res.redirected) {
+          alert('Session expired, please login again.');
+          window.location.href = '/login';
+          return;
+        }
+
+        const text = await res.text();
+        let data = {};
+        try {
+          data = text ? JSON.parse(text) : {};
+        } catch (e) {
+          console.error('JSON parse error:', e, text);
+          alert('Failed to create user (invalid server response).');
+          return;
+        }
+
+        if (!res.ok || data.error) {
+          alert(data.error || ('Failed to create user (HTTP ' + res.status + ')'));
+          return;
+        }
+
+        const today = new Date();
+        const exp = new Date(expire_date || document.getElementById('expire_date').value);
+        const diffMs = exp - today;
+        let dayLeft = Math.ceil(diffMs / (1000*60*60*24));
+        if (dayLeft < 0) dayLeft = 0;
+
+        showToast({
+          ip: serverIpCache || '...',
+          user: username,
+          pass: password,
+          hwid: hwid || '-',
+          dayLeft: dayLeft,
+          expire: expire_date || document.getElementById('expire_date').value,
+          port: data.udp_port ? data.udp_port : 'Auto-Assign'
+        });
+
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('hwid').value = '';
+        setDefaultDate();
+        fetchUsers();
+
+      } catch (e) {
+        console.error(e);
+        alert('Failed to create user: ' + (e.message || e));
+      }
+    }
+
+    async function deleteUser(id) {
+      if (!confirm('Delete this user?')) return;
+      try {
+        const res = await fetch('/api/users/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) fetchUsers();
+      } catch (e) {
+        alert('Failed to delete user');
+      }
+    }
+
+    async function editUser(id, username, oldPass, oldDate, oldHwid) {
+      const newPass = prompt('New password for ' + username + ' (leave blank to keep same):', oldPass);
+      const newDate = prompt('New expire date (YYYY-MM-DD, blank to keep same):', oldDate);
+      const newHwid = prompt('New HWID (blank to keep same, type "-" to clear):', oldHwid || '');
+
+      if (newPass === null && newDate === null && newHwid === null) return;
+
+      const payload = {};
+      if (newPass !== null && newPass !== oldPass) payload.password = newPass;
+      if (newDate !== null && newDate !== oldDate) payload.expire_date = newDate;
+      if (newHwid !== null) {
+        if (newHwid === "-") {
+          payload.hwid = "";
+        } else if (newHwid !== oldHwid) {
+          payload.hwid = newHwid;
+        }
+      }
+
+      if (Object.keys(payload).length === 0) return;
+
+      try {
+        const res = await fetch('/api/users/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.error) alert(data.error);
+        else fetchUsers();
+      } catch (e) {
+        alert('Failed to update user');
+      }
+    }
+
+    function applyThemeFromStorage() {
+      const mode = localStorage.getItem('zivpn_theme') || 'dark';
+      const body = document.body;
+      const fab = document.getElementById('themeFab');
+      if (mode === 'light') {
+        body.classList.add('light-mode');
+        fab.textContent = '☀';
+      } else {
+        body.classList.remove('light-mode');
+        fab.textContent = '🌙';
+      }
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      if (body.classList.contains('light-mode')) {
+        localStorage.setItem('zivpn_theme', 'dark');
+      } else {
+        localStorage.setItem('zivpn_theme', 'light');
+      }
+      applyThemeFromStorage();
+    }
+
+    function openAdminSettings() {
+      document.getElementById('admin-settings-backdrop').style.display = 'flex';
+      document.getElementById('admin-old-pass').value = '';
+      document.getElementById('admin-new-user').value = '';
+      document.getElementById('admin-new-pass').value = '';
+    }
+
+    function closeAdminSettings() {
+      document.getElementById('admin-settings-backdrop').style.display = 'none';
+    }
+
+    async function saveAdminSettings(ev) {
+      ev.preventDefault();
+      const oldPass = document.getElementById('admin-old-pass').value.trim();
+      const newUser = document.getElementById('admin-new-user').value.trim();
+      const newPass = document.getElementById('admin-new-pass').value.trim();
+
+      if (!oldPass) {
+        alert('Please enter current password');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            old_password: oldPass,
+            new_username: newUser,
+            new_password: newPass
+          })
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert('Admin credentials updated successfully');
+          closeAdminSettings();
+        }
+      } catch (e) {
+        alert('Failed to update admin settings');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const hwidInput = document.getElementById('search-hwid');
+      if (hwidInput) {
+        hwidInput.addEventListener('input', () => {
+          if (lastUsersPayload) {
+            renderUsers(lastUsersPayload);
+          }
+        });
+      }
+    });
+
+    setDefaultDate();
+    applyThemeFromStorage();
+    fetchServerInfo();
+    fetchUsers();
+    setInterval(fetchUsers, 5000);
+  </script>
+</body>
+</html>
